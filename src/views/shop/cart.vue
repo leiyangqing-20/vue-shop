@@ -6,28 +6,18 @@
     </el-breadcrumb>
     <el-card>
       <el-table
+        ref="multipleTable"
         :data="buyGoodsList"
         @selection-change="handleSelectionChange"
         style="width: 100%">
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
-        <el-table-column
-          label="图片"
-          width="180">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column label="图片" width="180">
           <template slot-scope="scope">
             <img :src="scope.row.goodImg" alt="" srcset="">
           </template>
         </el-table-column>
-        <el-table-column
-          prop="goodName"
-          label="商品名称"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="price"
-          label="单价">
+        <el-table-column prop="goodName" label="商品名称" width="180"></el-table-column>
+        <el-table-column prop="price" label="单价">
           <template slot-scope="{row}">
             ¥{{row.price}}
           </template>
@@ -35,6 +25,16 @@
         <el-table-column
           prop="num"
           label="数量">
+          <template slot-scope="{row}">
+            <el-input-number size="small" v-model="row.num" :min="1" :max="row.stockNum"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="stockNum"
+          label="剩余库存">
+          <template slot-scope="{row}">
+            {{row.stockNum > 0 ? row.stockNum : 1}}
+          </template>
         </el-table-column>
         <el-table-column label="小计">
           <template slot-scope="{row}">
@@ -44,14 +44,15 @@
         <el-table-column label="操作">
           <template slot-scope="{row}">
             <el-button type="text" @click="deleteGood(row)">删除</el-button>
+            <el-button type="text" @click="buyShop(row)">购买</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
-    <div class="footer-btn">
-      <span>您已选择{{selectionData.length}}件商品</span>
+    <el-card class="footer-btn">
+      <span class="check-num">您已选择{{selectionData.length}}件商品</span>
       <el-button type="danger" :disabled="selectionData.length === 0" @click="buyShop">去 结 算</el-button>
-    </div>
+    </el-card>
     <el-dialog
       :visible.sync="dialogVisible"
       width="30%"
@@ -87,6 +88,13 @@ export default {
     }
   },
   methods: {
+    AllSelection() {
+      this.toggleSelection()
+      this.$refs.multipleTable.toggleAllSelection
+    },
+    toggleSelection() {
+      this.$refs.multipleTable.clearSelection();
+    },
     handleSelectionChange(val) {
       this.selectionData = val
     },
@@ -96,7 +104,8 @@ export default {
       this.buyGoodsList = this.buyGoodsList.filter(item => !goodIdList.includes(item.goodId))
       sessionStorage.setItem('buyGoodsList', JSON.stringify(this.buyGoodsList))
     },
-    buyShop() {
+    buyShop(row) {
+      this.selectionData = [row]
       this.dialogVisible = true
       this.password = ''
     },
@@ -108,6 +117,7 @@ export default {
         })
         return
       }
+      let flag = false
       await this.$http({
         url: '/loginIn',
         method: 'post',
@@ -121,9 +131,10 @@ export default {
             type: 'error',
             message: '密码错误，请重新填写'
           })
-          return
+          flag = true
         }
       })
+      if (flag) return
       let List = this.selectionData.map(item => {
         return {
           goodId: item.goodId,
@@ -171,12 +182,23 @@ img {
 }
 .footer-btn {
   position: fixed;
+  width: 100%;
   bottom: 0;
-  right: 80px;
+  right: 0;
+  padding-right: 80px;
   text-align: right;
+  background: #fff;
+  z-index: 100;
   .el-button {
     margin-left: 20px;
     padding: 0 20px;
   }
+  .check-num {
+    font-size: 16px;
+    color: #d44b0c;
+  }
+}
+.el-breadcrumb {
+  margin-bottom: 44px;
 }
 </style>

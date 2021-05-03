@@ -45,6 +45,7 @@
     },
     methods: {
       logout() {
+        sessionStorage.setItem('userId', '')
         this.$route.push('/login')
       }
     }

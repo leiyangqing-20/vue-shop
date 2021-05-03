@@ -31,8 +31,6 @@
   </div>
 </template>
 <script>
-import { getBase64 } from '@/utils/index'
-// import { Base64 } from 'js-base64';
   export default {
     data() {
       return {
@@ -57,84 +55,6 @@ import { getBase64 } from '@/utils/index'
       this.getList()
     },
     methods: {
-      handleaddBtn() {
-        this.dialogVisible = true
-        this.type = 'add'
-        this.ruleForm = {}
-      },
-      addGoods() {
-        if (this.type === 'detail') {
-          this.closeDialog()
-          return
-        }
-        // 上传图片
-        this.$http({
-          url: '/parent/doGoods',
-          method: 'post',
-          data: {
-            method:	this.type, //edit/add/delete
-            goodId: this.type === 'add' ? '' : this.rowdata.goodId,
-            goodImg: this.goodImg,
-            goodName: this.ruleForm.goodName,
-            price: this.ruleForm.price,
-            stockNum: this.ruleForm.stockNum
-          }
-        }).then(res => {
-          if (res.data.status) {
-            this.closeDialog()
-            this.$message({
-              type: 'success',
-              message: res.data.msg
-            })
-          } else {
-            this.$message({
-              type: 'error',
-              message: res.data.msg
-            })
-          }
-        })
-      },
-      deleteGoods(goodId) {
-        this.$http({
-          url: '/parent/doGoods',
-          method: 'post',
-          data: {
-            method:	'delete', //edit/add/delete
-            goodId: goodId,
-          }
-        }).then(res => {
-          if (res.data.status) {
-            this.getList()
-          }
-          this.$message({
-            type: 'success',
-            message: res.data.msg
-          })
-        })
-      },
-      closeDialog() {
-        this.dialogVisible = false
-        this.$refs['ruleForm'].resetFields();
-        this.fileList = []
-      },
-      handleRemove(){},
-      handleClick(row, type) {
-        this.dialogVisible = true
-        this.type = type
-        this.rowdata = row
-        this.ruleForm = row
-        this.goodImg = row.goodImg
-        this.fileList = [{
-          name: 'name',
-          url: row.goodImg
-        }]
-      },
-      fileChange(file) {
-        this.fileList = [file]
-        getBase64(file.raw).then(res => {
-          this.goodImg = res
-        })
-      },
       getList() {
         this.$http({
           url: '/getOrder',
@@ -145,16 +65,6 @@ import { getBase64 } from '@/utils/index'
         }).then(res => {
           this.tableData = res.data.orderList
         })
-      },
-      handleCurrentChange() {
-
-      },
-      handleSizeChange() {
-
-      },
-      // 关闭弹框之前
-      handleClose() {
-        this.closeDialog()
       }
     }
   }

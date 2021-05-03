@@ -156,6 +156,7 @@ import { getBase64 } from '@/utils/index'
             }).then(res => {
               if (res.data.status) {
                 this.closeDialog()
+                this.getUsersList()
                 this.$message({
                   type: 'success',
                   message: res.data.msg
@@ -185,7 +186,7 @@ import { getBase64 } from '@/utils/index'
             userId: userId,
           }
         }).then(res => {
-          if (res.data.status) {
+          if (res.data.status === true) {
             this.getUsersList()
           }
           this.$message({

@@ -45,9 +45,9 @@ export default {
           })
           this.$store.commit('Set_userID', res.data.userId)
           if (res.data.isSuper) {
-            this.$router.push('/admin')
+            this.$router.push('/admin/list')
           } else {
-            this.$router.push('/shop')
+            this.$router.push('/shop/home')
           }
         } else {
           this.$message({

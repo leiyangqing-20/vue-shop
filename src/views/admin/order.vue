@@ -73,6 +73,7 @@ import { getBase64 } from '@/utils/index'
         goodImg: '',
         tableData: [],
         orderId: '',
+        userId: '',
         type: ''
       }
     },
@@ -92,7 +93,7 @@ import { getBase64 } from '@/utils/index'
           data: {
             orderId: this.orderId,
             logistics: this.ruleForm.logistics,
-            userId: this.$store.state.userId
+            userId: this.userId
           }
         }).then(res => {
           if (res.data.status) {
@@ -113,12 +114,14 @@ import { getBase64 } from '@/utils/index'
       closeDialog() {
         this.dialogVisible = false
         this.orderId = ''
+        this.userId = ''
         this.$refs['ruleForm'].resetFields();
       },
       handleRemove(){},
       handleClick(row) {
         this.dialogVisible = true
         this.orderId = row.orderId
+        this.userId = row.userId
       },
       fileChange(file) {
         this.fileList = [file]

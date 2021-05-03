@@ -229,12 +229,6 @@ import { getBase64 } from '@/utils/index'
           this.tableData = res.data.goodsList
         })
       },
-      handleCurrentChange() {
-
-      },
-      handleSizeChange() {
-
-      },
       // 关闭弹框之前
       handleClose() {
         this.closeDialog()

@@ -3,16 +3,24 @@
     <div class="header-page">
       <div>
         <svg-icon icon-class="ding"></svg-icon>
-        <span>北京</span>
+        <span v-if="!district" @click="district = true">{{province}}</span>
+        <my-district
+          v-else
+          :layout-levels="[1]"
+          :province.sync="province"
+          @change="()=> district = false"
+          class="district"
+        ></my-district>
       </div>
       <div>
-        <span>我的购物车 | </span>
-        <span>我的订单 | </span>
+        <span @click="toLink('/shop/cart')">我的购物车 | </span>
+        <span @click="toLink('/shop/order')">我的订单 | </span>
         <el-popover
           placement="bottom"
-          width="200"
+          width="160"
           trigger="click">
           <el-button type="text" @click="editUserInfo">修改用户信息</el-button>
+          <el-button type="text" @click="logout">退出</el-button>
           <i class="el-icon-setting" slot="reference" style="margin-right: 15px"></i>
         </el-popover>
         <img :src="userImg" alt="">
@@ -76,7 +84,11 @@
 <script>
 import "../assets/icons/svg/ding.svg"
 import { getBase64 } from '@/utils/index'
+import myDistrict from 'my-district'
 export default {
+  components: {
+    myDistrict,
+  },
   data() {
     return {
       userForm: {},
@@ -84,11 +96,18 @@ export default {
       dialogVisible: false,
       disabled: false,
       fileList: [],
+      province: '北京',
+      district: false,
       userImgIn: ''
     }
   },
   async created() {
     this.$store.dispatch('setUserId', this.$store.state.userId)
+  },
+  watch: {
+    province() {
+      this.district = false
+    }
   },
   computed: {
     userName () {
@@ -102,6 +121,13 @@ export default {
     }
   },
   methods: {
+    logout() {
+      sessionStorage.setItem('userId', '')
+      this.$router.push('/login')
+    },
+    toLink(path) {
+      this.$router.push(path)
+    },
     editUserInfo() {
       this.dialogVisible = true
       this.userForm = JSON.parse(JSON.stringify(this.userData))
@@ -167,9 +193,10 @@ export default {
 .header-page {
   padding: 0 10%;
   height: 40px;
-  background: #eee;
+  background: rgb(84, 92, 100);
   line-height: 40px;
   display: flex;
+  color: #eee;
   justify-content: space-between;
   img {
     width: 20px;

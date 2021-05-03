@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from '../components/Layout.vue'
+import Cookie from 'js-cookie'
 
 Vue.use(VueRouter)
 
@@ -73,5 +74,16 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
-
+console.log(document.cookie, '----')
+router.beforeEach((to, from, next) => {
+  console.log(to, Cookie.get('isLoginIn'), '====')
+  if (to.path === '/login' || to.path === '/regeist') {
+    next()
+    console.log(to, Cookie.get('isLoginIn'), Cookie.get('Admin-Token'))
+  } else if (sessionStorage.getItem('userId')) {
+    next()
+  } else {
+    next({ path: '/login' })
+  }
+})
 export default router
