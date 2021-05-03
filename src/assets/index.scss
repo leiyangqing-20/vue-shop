@@ -1,0 +1,20 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: PingFangSC-Regular;
+}
+.flexbox {
+  display: flex;
+}
+.el-button {
+  height: 40px;
+}
+.el-container {
+  height: 100%;
+  .el-menu {
+    height: 100%;
+  }
+}
