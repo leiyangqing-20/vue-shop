@@ -105,7 +105,9 @@ export default {
       sessionStorage.setItem('buyGoodsList', JSON.stringify(this.buyGoodsList))
     },
     buyShop(row) {
-      this.selectionData = [row]
+      if (row) {
+        this.selectionData = [row]
+      }
       this.dialogVisible = true
       this.password = ''
     },
